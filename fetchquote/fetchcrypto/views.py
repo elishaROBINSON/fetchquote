@@ -6,6 +6,7 @@ from rest_framework import permissions
 from fetchcrypto.models import CurrentCryptoPrice
 from .serializers import CryptoSerializer
 from requests import request
+from django.core import serializers
 
 class FetchQuoteApiView(APIView):
     # 1. get data from DB
@@ -22,18 +23,24 @@ class FetchQuoteApiView(APIView):
         '''
         Create the Todo with given todo data
         '''
-        pair = request.data.get("pair_name")
+        pair = request.data.get("pair_name","BTC:USD")
+        price = CurrentCryptoPrice.objects.get(pair_name = pair)
         current_price = Data().fetch_data("alphavantage", pair)
         data = {
             'current_price': current_price, 
             'pair_name': pair
         }
-        serializer = CryptoSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if price:
+            price.current_price = current_price
+            price.pair_name = pair
+            price.save()
+        else:
+            price = CurrentCryptoPrice.objects.create(**data)
+        if price:
+            serialized_obj = serializers.serialize('json', [ price, ])
+            return Response(serialized_obj, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response( status=status.HTTP_400_BAD_REQUEST)
 
 class Data(object):
     def __init__(self) -> None:
