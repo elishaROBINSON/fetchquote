@@ -1,5 +1,5 @@
 # fetchquote
-prequisite
+prerequisite
 > have latest version of docker and docker-compose
 > user should have access to it https://docs.docker.com/engine/install/linux-postinstall/
 
