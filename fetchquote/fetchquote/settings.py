@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "django_celery_beat"
+    "django_celery_beat",
+    "rest_framework",
+    "fetchcrypto",
 ]
 
 MIDDLEWARE = [
@@ -135,6 +137,6 @@ CELERY_BACKEND_URL = 'redis://redis:6379/0'
 CELERY_BEAT_SCHEDULE = {
  'send-summary-every-hour': {
        'task': 'summary',
-       'schedule': 3.0
+       'schedule': 30.0
     }
 }

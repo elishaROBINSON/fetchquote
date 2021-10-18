@@ -4,3 +4,5 @@ django-environ
 Celery
 django_celery_beat
 redis
+djangorestframework
+requests
